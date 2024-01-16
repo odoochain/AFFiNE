@@ -12,6 +12,7 @@ export {
   DeploymentType,
   getDefaultAFFiNEStorageConfig,
 } from './config';
+export { NewConfig } from './config-new';
 export * from './error';
 export { EventEmitter, type EventPayload, OnEvent } from './event';
 export type { GraphqlContext } from './graphql';
@@ -25,6 +26,7 @@ export {
   OptionalModule,
 } from './nestjs';
 export type { PrismaTransaction } from './prisma';
+export { Runtime } from './runtime';
 export * from './storage';
 export { type StorageProvider, StorageProviderFactory } from './storage';
 export { CloudThrottlerGuard, SkipThrottle, Throttle } from './throttler';

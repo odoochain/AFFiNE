@@ -17,8 +17,15 @@ import { UserModule } from './core/user';
 import { WorkspaceModule } from './core/workspaces';
 import { getOptionalModuleMetadata } from './fundamentals';
 import { CacheModule } from './fundamentals/cache';
-import type { AvailablePlugins } from './fundamentals/config';
-import { Config, ConfigModule } from './fundamentals/config';
+import {
+  type AvailablePlugins,
+  Config,
+  ConfigModule,
+} from './fundamentals/config';
+import {
+  mergeConfigOverride,
+  NewConfigModule,
+} from './fundamentals/config-new';
 import { EventModule } from './fundamentals/event';
 import { GqlModule } from './fundamentals/graphql';
 import { HelpersModule } from './fundamentals/helpers';
@@ -33,6 +40,7 @@ import { REGISTERED_PLUGINS } from './plugins';
 
 export const FunctionalityModules = [
   ConfigModule.forRoot(),
+  NewConfigModule.forRoot(),
   ScheduleModule.forRoot(),
   EventModule,
   CacheModule,
@@ -112,6 +120,7 @@ export class AppModuleBuilder {
 }
 
 function buildAppModule() {
+  NEW_AFFiNE = mergeConfigOverride(NEW_AFFiNE);
   const factor = new AppModuleBuilder(AFFiNE);
 
   factor

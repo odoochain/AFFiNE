@@ -11,6 +11,7 @@ import {
   applyEnvToConfig,
   getDefaultAFFiNEConfig,
 } from './fundamentals/config';
+import { getAFFiNEConfigModifier } from './fundamentals/config-new';
 
 const configDir = join(fileURLToPath(import.meta.url), '../config');
 async function loadRemote(remoteDir: string, file: string) {
@@ -38,6 +39,7 @@ async function load() {
 
   // 2. generate AFFiNE default config and assign to `globalThis.AFFiNE`
   globalThis.AFFiNE = getDefaultAFFiNEConfig();
+  globalThis.NEW_AFFiNE = getAFFiNEConfigModifier();
 
   // TODO(@forehalo):
   //   Modules may contribute to ENV_MAP, figure out a good way to involve them instead of hardcoding in `./config/affine.env`

@@ -5,7 +5,9 @@ import { Config, SkipThrottle } from './fundamentals';
 
 @Controller('/')
 export class AppController {
-  constructor(private readonly config: Config) {}
+  constructor(private readonly config: Config) {
+    console.log(NEW_AFFiNE);
+  }
 
   @SkipThrottle()
   @Public()
