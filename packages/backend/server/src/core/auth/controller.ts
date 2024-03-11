@@ -1,5 +1,3 @@
-import { randomUUID } from 'node:crypto';
-
 import {
   BadRequestException,
   Body,
@@ -186,16 +184,6 @@ export class AuthController {
 
     return {
       users: await this.auth.getUserList(token),
-    };
-  }
-
-  @Public()
-  @Get('/challenge')
-  async challenge() {
-    // TODO: impl in following PR
-    return {
-      challenge: randomUUID(),
-      resource: randomUUID(),
     };
   }
 }
