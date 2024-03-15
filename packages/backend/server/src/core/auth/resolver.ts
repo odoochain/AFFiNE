@@ -1,4 +1,8 @@
-import { BadRequestException, ForbiddenException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Optional,
+} from '@nestjs/common';
 import {
   Args,
   Context,
@@ -13,6 +17,7 @@ import {
 import type { Request, Response } from 'express';
 
 import { Config, Throttle } from '../../fundamentals';
+import { CaptchaService } from '../../plugins/captcha/service';
 import { UserService } from '../user';
 import { UserType } from '../user/types';
 import { validators } from '../utils/validators';
@@ -46,7 +51,8 @@ export class AuthResolver {
     private readonly config: Config,
     private readonly auth: AuthService,
     private readonly user: UserService,
-    private readonly token: TokenService
+    private readonly token: TokenService,
+    @Optional() private readonly captcha?: CaptchaService
   ) {}
 
   @Public()
@@ -90,9 +96,18 @@ export class AuthResolver {
     @Context() ctx: { req: Request; res: Response },
     @Args('name') name: string,
     @Args('email') email: string,
-    @Args('password') password: string
+    @Args('password') password: string,
+    @Args('token') token: string,
+    @Args('challenge') challenge?: string
   ) {
-    validators.assertValidCredential({ email, password });
+    const credential = validators.assertValidCredential({
+      email,
+      password,
+      challenge,
+      token,
+    });
+    await this.captcha?.verifyRequest(credential, ctx.req);
+
     const user = await this.auth.signUp(name, email, password);
     await this.auth.setCookie(ctx.req, ctx.res, user);
     ctx.req.user = user;
@@ -104,9 +119,18 @@ export class AuthResolver {
   async signIn(
     @Context() ctx: { req: Request; res: Response },
     @Args('email') email: string,
-    @Args('password') password: string
+    @Args('password') password: string,
+    @Args('token') token: string,
+    @Args('challenge') challenge?: string
   ) {
-    validators.assertValidEmail(email);
+    const credential = validators.assertValidCredential({
+      email,
+      password,
+      challenge,
+      token,
+    });
+    await this.captcha?.verifyRequest(credential, ctx.req);
+
     const user = await this.auth.signIn(email, password);
     await this.auth.setCookie(ctx.req, ctx.res, user);
     ctx.req.user = user;
